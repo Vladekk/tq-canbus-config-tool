@@ -35,6 +35,9 @@ for the HPR50 bus: **500 kbit/s, standard 11‑bit frames**.
 ## 2. Quick start
 
 ```bash
+# run with no command to auto-detect adapters and get a ready-to-run command line
+python tq_canbus_config.py
+
 # find your adapter's serial port
 python tq_canbus_config.py list-ports
 
@@ -62,7 +65,7 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 | `--node <id>` | — | Default node id for params that have no fixed node |
 | `--timeout <ms>` | `2000` | Per‑transaction wait for an ACK |
 | `--params <path>` | `params.json` (next to the script) | Parameter table to load |
-| `--identity <who>` | `tool` | Announce as `tool` (node 61) or `dongle` (node 60); see §6 |
+| `--identity <who>` | `tool` | Announce as `tool` (node 61), `dongle` (node 60), or a raw node to impersonate — `<node>` or `<node>:<hw_type>` (decimal/`0x`-hex, e.g. `17` or `21:0xF0`); see §6 |
 | `--no-announce` | off | Skip the connect‑time SLAVECHANGED/NODEINFO announce (pure passive listen) |
 | `-v, --verbose` | off | Print the bus open kwargs + every TX/RX CAN frame to stderr |
 
@@ -85,6 +88,7 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 ### Discovery / reference (work offline, no adapter needed)
 | Command | Description |
 |---|---|
+| *(no command)* | Auto-detect serial ports and print a ready-to-run command line for each candidate adapter (multiple ports → one suggestion per port, so you can pick) |
 | `list-ports` | List serial ports; flags likely Robotell (CH340) adapters |
 | `list-nodes` | Print the known node‑id table |
 | `list-params [filter]` | List CAN parameters (optional name substring filter) |
@@ -94,6 +98,7 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 | Command | Description |
 |---|---|
 | `scan [--wait <ms>]` | Discover nodes: passively listen, then actively probe known nodes |
+| `monitor [--duration <ms>] [--raw]` | Passively sniff the bus and print/decode **every** frame other nodes send (PER layer, source/target node, param name, value/status). Never transmits. `--node N` filters to one node; `--raw` skips decoding; Ctrl‑C to stop |
 | `info [<node>]` | Read & print all readable params of a node (or all known nodes) |
 | `read <name\|0xID> [--node N]` | Read one parameter via **SDR**, scaled to its unit |
 | `write <name\|0xID> <value> [--no-ack]` | Write one parameter via **SDW**, range‑checked |
@@ -112,6 +117,11 @@ for the write acknowledgement) — handy when the bus is degraded.
 ```bash
 # Discover what's on the bus
 python tq_canbus_config.py --channel COM4 scan --wait 1500
+
+# Passively watch everything other nodes put on the bus (decoded), Ctrl-C to stop
+python tq_canbus_config.py --channel COM4 monitor
+# Only the BMS (node 17), capture 5 s, raw frames (no decode)
+python tq_canbus_config.py --channel COM4 --node 17 monitor --duration 5000 --raw
 
 # Read battery state of charge (BMS, node 17)
 python tq_canbus_config.py --channel COM4 read BATT_SOC
@@ -150,6 +160,15 @@ All multi‑byte fields are little‑endian. (`canid` formulas from [`CAN.md`](C
   `UnitScalingFactor`.
 - **`status == 1` (`STAT_OK`) means OK** — not 0. Other values are `E_CanStatus`
   error codes (2 ERRCAN, 3 ERRADDRESS, 4 ERRRANGE, 5 ERRACCESS, …).
+
+**Identity / node impersonation.** Only the connect-time announce frames
+(`SLAVECHANGED`/`NODEINFO`, P1 ids) carry a *source* node — `SDR`/`SDW`
+read/write frames address a target and carry no source, so there is nothing to
+spoof there. `--identity` sets which node those announce frames claim to be:
+`tool` (61) and `dongle` (60) are the two TQ service identities, and any raw
+node id (`0`–`63`, optionally `:<hw_type>`) lets the tool register on the bus as
+that node — e.g. `--identity 17` announces as the BMS. Whether a target ECU
+honours a non-service identity is firmware-dependent.
 
 Worked example — `write SB_OUT1 1` (Smartbox node 46, param `0x3024`):
 sends `0x773  24 30 01 00 00 00`, expects `0x2AE  01 24 30` (status `01` =

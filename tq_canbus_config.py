@@ -54,6 +54,31 @@ IDENTITIES = {
     "dongle":   (SERVICE_DONGLE_NODE, HW_TYPE_SERVICE_DONGLE),
 }
 
+
+def resolve_identity(spec: str):
+    """Resolve --identity into (src_node, hw_type_byte).
+
+    Accepts a named identity ('tool'/'dongle') or a raw node id to announce as
+    any node on the bus: '<node>' or '<node>:<hw_type>' where both numbers are
+    decimal or 0x-hex.  Without an explicit hw_type the service-tool byte is
+    used.  Lets the tool impersonate non-service nodes (e.g. BMS, display).
+    """
+    if spec in IDENTITIES:
+        return IDENTITIES[spec]
+    node_str, _, hw_str = spec.partition(":")
+    try:
+        node = int(node_str, 0)
+        hw_type = int(hw_str, 0) if hw_str else HW_TYPE_SERVICE_TOOL
+    except ValueError:
+        raise SystemExit(
+            f"--identity: expected 'tool', 'dongle', '<node>' or '<node>:<hw_type>', "
+            f"got {spec!r}")
+    if not 0 <= node <= 0x3F:
+        raise SystemExit(f"--identity: node id {node} out of range 0..63")
+    if not 0 <= hw_type <= 0xFF:
+        raise SystemExit(f"--identity: hw_type {hw_type} out of range 0..255")
+    return node, hw_type
+
 # P3 point-to-point message ids:  canid = 0x600 | (node << 3) | msgId
 P3_SDR = 2                     # service-data read  (read a parameter)
 P3_SDW = 3                     # service-data write (write a parameter)
@@ -63,6 +88,11 @@ P1_ACK_SDR = 8
 P1_ACK_SDW = 10
 P1_BROADCAST = 14
 P1_SLAVECHANGED = 15
+
+# Human names for the PER message ids, used when decoding sniffed traffic.
+P1_MSG_NAMES = {P1_ACK_SDR: "ACK_SDR", P1_ACK_SDW: "ACK_SDW",
+                P1_BROADCAST: "BROADCAST", P1_SLAVECHANGED: "SLAVECHANGED"}
+P3_MSG_NAMES = {P3_SDR: "SDR", P3_SDW: "SDW"}
 
 # ACK reply status byte (E_CanStatus from CanLib's CheckReceiveMsg). The status
 # is the FIRST payload byte; address follows at [1:3]; value (SDR) at [3:7].
@@ -105,6 +135,21 @@ def p3_id(node: int, msg_id: int) -> int:
 
 def p1_id(node: int, msg_id: int) -> int:
     return ((msg_id & 0xF) << 6) | (node & 0x3F)
+
+
+def per_layer(cid: int):
+    """Classify a CAN id into the PER layer it belongs to.
+
+    Returns (layer, node, msg_id): 'P1' for broadcast/ack frames (0x000..0x3FF,
+    node is the *source*), 'P3' for point-to-point (0x600..0x7FF, node is the
+    *target*).  Ids 0x400..0x5FF are not PER frames -> (None, None, None).
+    Mirrors the split in CanLib's PERCanReceiveMsg filter (see cmd_scan).
+    """
+    if cid & 0x400 == 0:                 # P1 broadcast/ack
+        return "P1", cid & 0x3F, (cid >> 6) & 0xF
+    if cid & 0x600 == 0x600:             # P3 point-to-point
+        return "P3", (cid >> 3) & 0x3F, cid & 0x7
+    return None, None, None
 
 
 # --------------------------------------------------------------------------
@@ -341,18 +386,52 @@ def scaled_str(value: int, p: Param) -> str:
 # Commands
 # --------------------------------------------------------------------------
 
-def cmd_list_ports(args, table):
+def enumerate_ports():
+    """Return [(device, description, hwid, is_robotell)] for every serial port."""
     from serial.tools import list_ports
-    ports = list(list_ports.comports())
+    out = []
+    for pinfo in list_ports.comports():
+        desc = pinfo.description or ""
+        hwid = pinfo.hwid or ""
+        is_robo = "CH340" in (desc + hwid).upper()
+        out.append((pinfo.device, desc, hwid, is_robo))
+    return out
+
+
+def cmd_list_ports(args, table):
+    ports = enumerate_ports()
     if not ports:
         print("no serial ports found")
         return 0
     print("Serial ports (candidate Robotell adapters):")
-    for pinfo in ports:
-        desc = pinfo.description or ""
-        hwid = pinfo.hwid or ""
-        hint = "  <-- likely Robotell (CH340)" if "CH340" in (desc + hwid).upper() else ""
-        print(f"  {pinfo.device:10}  {desc}  [{hwid}]{hint}")
+    for dev, desc, hwid, is_robo in ports:
+        hint = "  <-- likely Robotell (CH340)" if is_robo else ""
+        print(f"  {dev:10}  {desc}  [{hwid}]{hint}")
+    return 0
+
+
+def cmd_default(args, table):
+    """No subcommand given: enumerate ports and suggest a ready-to-run command
+    line for each, so the user can pick the port wired to their adapter."""
+    prog = f"python {os.path.basename(sys.argv[0]) or 'tq_canbus_config.py'}"
+    ports = enumerate_ports()
+    if not ports:
+        print("No serial ports found — plug in your Robotell USB-CAN adapter, then:")
+        print(f"  {prog} list-ports")
+        return 0
+    print("No command given. Detected serial port(s):\n")
+    for dev, desc, hwid, is_robo in ports:
+        tag = "  <-- likely Robotell (CH340)" if is_robo else ""
+        print(f"  {dev:12} {desc}{tag}")
+    # Prefer the CH340 adapters; if none are flagged, suggest every port.
+    cands = [p for p in ports if p[3]] or ports
+    print("\nPick a port and run, e.g.:\n")
+    for dev, desc, hwid, is_robo in cands:
+        print(f"  {prog} --channel {dev} scan       # discover nodes")
+        print(f"  {prog} --channel {dev} monitor    # watch live bus traffic")
+    if len(cands) > 1:
+        print("\n(multiple ports detected — choose the one wired to your adapter)")
+    print(f"\nFull command list:  {prog} --help")
     return 0
 
 
@@ -416,7 +495,7 @@ def _open(args) -> PerBus:
     extra = _parse_bus_args(getattr(args, "bus_arg", None))
     bus = PerBus(args.interface, args.channel, args.bitrate,
                  args.tty_baud, args.rtscts, extra, args.verbose)
-    bus.src_node, bus.hw_type = IDENTITIES[getattr(args, "identity", "tool")]
+    bus.src_node, bus.hw_type = resolve_identity(getattr(args, "identity", "tool"))
     # Announce ourselves so access-protected nodes (e.g. the MCB) accept our
     # transactions instead of replying STAT_ERRACCESS.  Skippable with
     # --no-announce for a pure passive listen.
@@ -436,15 +515,8 @@ def cmd_scan(args, table):
             m = bus.bus.recv(timeout=max(0.0, deadline - time.monotonic()))
             if m is None:
                 continue
-            cid = m.arbitration_id
-            # P1/P3 split per CanLib PERCanReceiveMsg.filter: bit 0x400 selects
-            # the layer. IDs in 0x400..0x5FF are not PER frames — ignore them
-            # (otherwise their low bits masquerade as bogus node ids, e.g. 31).
-            if cid & 0x400 == 0:                   # P1 broadcast/ack
-                node = cid & 0x3F
-            elif cid & 0x200:                      # P3 point-to-point
-                node = (cid >> 3) & 0x3F
-            else:
+            layer, node, _ = per_layer(m.arbitration_id)
+            if layer is None:
                 continue
             if node and node != bus.src_node:
                 found.setdefault(node, "passive")
@@ -460,6 +532,79 @@ def cmd_scan(args, table):
             print(f"  node={node:<3} {NODE_NAMES.get(node, '?'):20} {found[node]}")
         if not found:
             print("  (none — bus silent / no node ACKed; check power, wiring, termination)")
+    return 0
+
+
+def lookup_param(table, addr: int, node: int):
+    """Find the CanValue param matching both address and node (ids collide
+    across nodes, e.g. 0x3113 is BATT_SOC on 17 and RAEXT_SOC on 20)."""
+    for p in table.all:
+        if p.type == "CanValue" and p.id == addr and p.node == node:
+            return p
+    return None
+
+
+def describe_frame(cid: int, data: bytes, table) -> str:
+    """Decode one sniffed CAN frame into a human-readable PER annotation."""
+    layer, node, msg = per_layer(cid)
+    if layer is None:
+        return "non-PER"
+    nodename = NODE_NAMES.get(node, "?")
+    if layer == "P1":
+        mname = P1_MSG_NAMES.get(msg, f"msg{msg}")
+        s = f"P1 {mname:12} node={node:<2} {nodename}"
+        if msg in (P1_ACK_SDR, P1_ACK_SDW) and len(data) >= 3:
+            status = data[0]
+            addr = data[1] | (data[2] << 8)
+            sname = CAN_STATUS_NAMES.get(status, str(status))
+            p = lookup_param(table, addr, node)
+            s += f"  {p.name if p else f'0x{addr:04X}'} status={sname}"
+            if msg == P1_ACK_SDR and len(data) >= 7:
+                raw = int.from_bytes(data[3:7], "little")
+                if p and status == STAT_OK:
+                    s += f" = {scaled_str(interpret(raw, p), p)}"
+                else:
+                    s += f" raw=0x{raw:08X}"
+        return s
+    mname = P3_MSG_NAMES.get(msg, f"msg{msg}")
+    s = f"P3 {mname:12} ->node={node:<2} {nodename}"
+    if len(data) >= 2:
+        addr = data[0] | (data[1] << 8)
+        p = lookup_param(table, addr, node)
+        s += f"  {p.name if p else f'0x{addr:04X}'}"
+        if msg == P3_SDW and len(data) >= 6:
+            s += f" := 0x{int.from_bytes(data[2:6], 'little'):08X}"
+    return s
+
+
+def cmd_monitor(args, table):
+    # Pure passive sniff: never announce, so we don't inject our own frames.
+    args.no_announce = True
+    only = int(args.node, 0) if args.node else None
+    with _open(args) as bus:
+        print(f"monitoring {args.channel} — Ctrl-C to stop", file=sys.stderr)
+        t0 = time.monotonic()
+        deadline = (t0 + args.duration / 1000.0) if args.duration else None
+        count = 0
+        try:
+            while deadline is None or time.monotonic() < deadline:
+                to = 0.5 if deadline is None else max(0.0, deadline - time.monotonic())
+                m = bus.bus.recv(timeout=to)
+                if m is None:
+                    continue
+                cid = m.arbitration_id
+                data = bytes(m.data)
+                _, node, _ = per_layer(cid)
+                if only is not None and node != only:
+                    continue
+                line = f"{time.monotonic() - t0:8.3f}  {cid:03X}  {data.hex(' '):<23}"
+                if not args.raw:
+                    line += "  " + describe_frame(cid, data, table)
+                print(line)
+                count += 1
+        except KeyboardInterrupt:
+            pass
+        print(f"\n{count} frame(s) captured", file=sys.stderr)
     return 0
 
 
@@ -657,11 +802,15 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--no-announce", action="store_true",
                     help="don't announce the service-tool node on connect "
                          "(announcing is needed for MCB access-protected params)")
-    ap.add_argument("--identity", choices=sorted(IDENTITIES), default="tool",
-                    help="identity to announce as: 'tool' (node 61, default) or "
-                         "'dongle' (node 60) — dongle may unlock factory-protected params")
+    ap.add_argument("--identity", default="tool", metavar="WHO",
+                    help="identity to announce as: 'tool' (node 61, default), "
+                         "'dongle' (node 60, may unlock factory-protected params), "
+                         "or a raw node to impersonate: '<node>' or '<node>:<hw_type>' "
+                         "(decimal or 0x-hex, e.g. 17 or 21:0xF0)")
 
-    sub = ap.add_subparsers(dest="cmd", required=True)
+    # No subcommand -> cmd_default (suggest ports + command lines).
+    ap.set_defaults(fn=cmd_default)
+    sub = ap.add_subparsers(dest="cmd", required=False)
 
     sub.add_parser("list-ports", help="list serial ports (candidate adapters)").set_defaults(fn=cmd_list_ports)
     sub.add_parser("list-nodes", help="show known node ids").set_defaults(fn=cmd_list_nodes)
@@ -677,6 +826,13 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("scan", help="discover nodes on the bus")
     sp.add_argument("--wait", type=int, default=0, help="passive listen window in ms")
     sp.set_defaults(fn=cmd_scan)
+
+    sp = sub.add_parser("monitor", help="passively dump & decode all CAN bus traffic")
+    sp.add_argument("--duration", type=int, default=0,
+                    help="stop after N ms (default: run until Ctrl-C)")
+    sp.add_argument("--raw", action="store_true",
+                    help="show raw frames only, skip PER decode")
+    sp.set_defaults(fn=cmd_monitor)
 
     sp = sub.add_parser("info", help="dump readable params for a node (or all known)")
     sp.add_argument("node", nargs="?", help="node id (default: all known nodes)")
