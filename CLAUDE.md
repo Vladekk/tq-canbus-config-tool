@@ -10,7 +10,7 @@ It reads from / writes to the same nodes and parameters `can-cli` does, by
 loading the same `BikeParameters/params.json` for name ↔ ID / node / range /
 scaling resolution.
 
-> See `../CAN.md` for the full PER‑protocol description these frames are built from.
+> See [`CAN.md`](CAN.md) for the full PER‑protocol description these frames are built from.
 
 ---
 
@@ -137,7 +137,7 @@ python robotell_cli.py --channel COM4 -v read BATT_SOC
 
 ## 6. How it maps to the PER protocol
 
-All multi‑byte fields are little‑endian. (`canid` formulas from `../CAN.md`.)
+All multi‑byte fields are little‑endian. (`canid` formulas from [`CAN.md`](CAN.md).)
 
 | Operation | TX frame | Expected reply |
 |---|---|---|
