@@ -98,7 +98,7 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 | Command | Description |
 |---|---|
 | `scan [--wait <ms>]` | Discover nodes: passively listen, then actively probe known nodes |
-| `monitor [--duration <ms>] [--raw]` | Passively sniff the bus and print/decode **every** frame other nodes send (PER layer, source/target node, param name, value/status). Never transmits. `--node N` filters to one node; `--raw` skips decoding; Ctrl‑C to stop |
+| `monitor [--duration <ms>] [--raw] [--unknown-only] [--log <file>]` | Passively sniff the bus and print/decode **every** frame other nodes send (PER layer, PDR/PDW/SDR/SDW + ACKs, source/target node, param name, value/status). Never transmits. On exit prints a per‑id summary with a **changed‑byte map** (`X`=byte varied, `.`=constant) — the lever for reversing unknown frames. `--node N` filters to one node; `--unknown-only` shows just the non‑PER (`0x400`–`0x5FF`) foreign frames; `--log <file>` dumps `<t> <id> <hex>` for offline analysis; `--raw` skips decoding; Ctrl‑C to stop |
 | `info [<node>]` | Read & print all readable params of a node (or all known nodes) |
 | `read <name\|0xID> [--node N]` | Read one parameter via **SDR**, scaled to its unit |
 | `write <name\|0xID> <value> [--no-ack]` | Write one parameter via **SDW**, range‑checked |
@@ -122,6 +122,9 @@ python tq_canbus_config.py --channel COM4 scan --wait 1500
 python tq_canbus_config.py --channel COM4 monitor
 # Only the BMS (node 17), capture 5 s, raw frames (no decode)
 python tq_canbus_config.py --channel COM4 --node 17 monitor --duration 5000 --raw
+# Hunt a foreign/unknown protocol (e.g. a non-TQ BMS): show only non-PER frames,
+# log them, and read the changed-byte map in the exit summary to reverse them
+python tq_canbus_config.py --channel COM4 monitor --unknown-only --log bms.log
 
 # Read battery state of charge (BMS, node 17)
 python tq_canbus_config.py --channel COM4 read BATT_SOC

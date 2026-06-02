@@ -80,19 +80,36 @@ def resolve_identity(spec: str):
     return node, hw_type
 
 # P3 point-to-point message ids:  canid = 0x600 | (node << 3) | msgId
+P3_PDR = 0                     # process-data read  (runtime value)
+P3_PDW = 1                     # process-data write (runtime value)
 P3_SDR = 2                     # service-data read  (read a parameter)
 P3_SDW = 3                     # service-data write (write a parameter)
+P3_DATA = 5                    # continuation chunk (large transfers)
 
 # P1 broadcast / ack message ids:  canid = (msgId << 6) | node
+P1_EMCY_OFF = 0
+P1_EMCY = 1
+P1_ACK_PDR = 7
 P1_ACK_SDR = 8
+P1_ACK_PDW = 9
 P1_ACK_SDW = 10
 P1_BROADCAST = 14
 P1_SLAVECHANGED = 15
 
 # Human names for the PER message ids, used when decoding sniffed traffic.
-P1_MSG_NAMES = {P1_ACK_SDR: "ACK_SDR", P1_ACK_SDW: "ACK_SDW",
+P1_MSG_NAMES = {P1_EMCY_OFF: "EMCY_OFF", P1_EMCY: "EMCY",
+                P1_ACK_PDR: "ACK_PDR", P1_ACK_SDR: "ACK_SDR",
+                P1_ACK_PDW: "ACK_PDW", P1_ACK_SDW: "ACK_SDW",
                 P1_BROADCAST: "BROADCAST", P1_SLAVECHANGED: "SLAVECHANGED"}
-P3_MSG_NAMES = {P3_SDR: "SDR", P3_SDW: "SDW"}
+P3_MSG_NAMES = {P3_PDR: "PDR", P3_PDW: "PDW", P3_SDR: "SDR", P3_SDW: "SDW",
+                P3_DATA: "DATA"}
+
+# ACK frames that carry a value (status, addr, val32) vs. status+addr only.
+P1_ACK_WITH_VALUE = (P1_ACK_SDR, P1_ACK_PDR)
+P1_ACK_STATUS_ONLY = (P1_ACK_SDW, P1_ACK_PDW)
+# P3 requests that carry a value (addr, val32) vs. addr-only.
+P3_REQ_WITH_VALUE = (P3_SDW, P3_PDW)
+P3_REQ_ADDR_ONLY = (P3_SDR, P3_PDR)
 
 # ACK reply status byte (E_CanStatus from CanLib's CheckReceiveMsg). The status
 # is the FIRST payload byte; address follows at [1:3]; value (SDR) at [3:7].
@@ -551,21 +568,26 @@ def lookup_param(table, addr: int, node: int):
 
 
 def describe_frame(cid: int, data: bytes, table) -> str:
-    """Decode one sniffed CAN frame into a human-readable PER annotation."""
+    """Decode one sniffed CAN frame into a human-readable PER annotation.
+
+    Frames outside the PER layers (ids 0x400..0x5FF) are flagged 'non-PER ???'
+    — these are foreign protocols (e.g. a BMS speaking its own broadcast) and
+    are exactly what the monitor's unknown-frame summary helps reverse.
+    """
     layer, node, msg = per_layer(cid)
     if layer is None:
-        return "non-PER"
+        return "non-PER ???"
     nodename = NODE_NAMES.get(node, "?")
     if layer == "P1":
         mname = P1_MSG_NAMES.get(msg, f"msg{msg}")
         s = f"P1 {mname:12} node={node:<2} {nodename}"
-        if msg in (P1_ACK_SDR, P1_ACK_SDW) and len(data) >= 3:
+        if msg in P1_ACK_WITH_VALUE + P1_ACK_STATUS_ONLY and len(data) >= 3:
             status = data[0]
             addr = data[1] | (data[2] << 8)
             sname = CAN_STATUS_NAMES.get(status, str(status))
             p = lookup_param(table, addr, node)
             s += f"  {p.name if p else f'0x{addr:04X}'} status={sname}"
-            if msg == P1_ACK_SDR and len(data) >= 7:
+            if msg in P1_ACK_WITH_VALUE and len(data) >= 7:
                 raw = int.from_bytes(data[3:7], "little")
                 if p and status == STAT_OK:
                     s += f" = {scaled_str(interpret(raw, p), p)}"
@@ -578,20 +600,55 @@ def describe_frame(cid: int, data: bytes, table) -> str:
         addr = data[0] | (data[1] << 8)
         p = lookup_param(table, addr, node)
         s += f"  {p.name if p else f'0x{addr:04X}'}"
-        if msg == P3_SDW and len(data) >= 6:
+        if msg in P3_REQ_WITH_VALUE and len(data) >= 6:
             s += f" := 0x{int.from_bytes(data[2:6], 'little'):08X}"
     return s
+
+
+def layer_label(cid: int) -> str:
+    """Short tag for a CAN id's PER layer: 'P1', 'P3', or '??' (foreign)."""
+    layer, _, _ = per_layer(cid)
+    return layer or "??"
+
+
+class FrameStat:
+    """Per-CAN-id aggregate for the monitor summary: how often an id appears
+    and which payload byte positions ever change (the key clue for reversing an
+    unknown protocol — constant bytes are headers, changing ones are signals)."""
+    __slots__ = ("count", "first", "last", "changed", "dlc")
+
+    def __init__(self, data: bytes):
+        self.count = 0
+        self.first = data
+        self.last = data
+        self.changed = 0          # bit i set if byte i ever differed from first
+        self.dlc = len(data)
+
+    def update(self, data: bytes):
+        self.count += 1
+        self.dlc = max(self.dlc, len(data))
+        for i in range(min(len(data), len(self.first))):
+            if data[i] != self.first[i]:
+                self.changed |= 1 << i
+        self.last = data
+
+    def change_map(self) -> str:
+        # 'X' where the byte varied across the capture, '.' where it stayed put.
+        return "".join("X" if self.changed & (1 << i) else "." for i in range(self.dlc))
 
 
 def cmd_monitor(args, table):
     # Pure passive sniff: never announce, so we don't inject our own frames.
     args.no_announce = True
     only = int(args.node, 0) if args.node else None
+    logf = open(args.log, "w") if args.log else None
+    stats: dict[int, FrameStat] = {}
+    count = 0
     with _open(args) as bus:
-        print(f"monitoring {args.channel} — Ctrl-C to stop", file=sys.stderr)
+        what = "unknown (non-PER) frames" if args.unknown_only else "all traffic"
+        print(f"monitoring {args.channel} — {what} — Ctrl-C to stop", file=sys.stderr)
         t0 = time.monotonic()
         deadline = (t0 + args.duration / 1000.0) if args.duration else None
-        count = 0
         try:
             while deadline is None or time.monotonic() < deadline:
                 to = 0.5 if deadline is None else max(0.0, deadline - time.monotonic())
@@ -600,18 +657,51 @@ def cmd_monitor(args, table):
                     continue
                 cid = m.arbitration_id
                 data = bytes(m.data)
-                _, node, _ = per_layer(cid)
+                layer, node, _ = per_layer(cid)
+                if args.unknown_only and layer is not None:
+                    continue
                 if only is not None and node != only:
                     continue
-                line = f"{time.monotonic() - t0:8.3f}  {cid:03X}  {data.hex(' '):<23}"
+                t = time.monotonic() - t0
+                st = stats.get(cid)
+                if st is None:
+                    stats[cid] = st = FrameStat(data)
+                st.update(data)
+                line = f"{t:8.3f}  {cid:03X}  {data.hex(' '):<23}"
                 if not args.raw:
                     line += "  " + describe_frame(cid, data, table)
                 print(line)
+                if logf:
+                    logf.write(f"{t:.3f} {cid:03X} {data.hex(' ')}\n")
                 count += 1
         except KeyboardInterrupt:
             pass
-        print(f"\n{count} frame(s) captured", file=sys.stderr)
+        finally:
+            if logf:
+                logf.close()
+    _print_monitor_summary(stats, count, table)
+    if logf:
+        print(f"raw log written to {args.log}", file=sys.stderr)
     return 0
+
+
+def _print_monitor_summary(stats: dict, count: int, table):
+    print(f"\n{count} frame(s) captured, {len(stats)} distinct id(s)", file=sys.stderr)
+    if not stats:
+        return
+    # Per-id rollup, sorted by id. 'changed' map and last payload are the levers
+    # for reverse-engineering an unknown id; the decode names the known ones.
+    print(f"\n{'id':>4}  {'lyr':3} {'n':>6}  {'changed':<8}  {'last data':<23}  decode",
+          file=sys.stderr)
+    for cid in sorted(stats):
+        st = stats[cid]
+        print(f"{cid:>4X}  {layer_label(cid):3} {st.count:>6}  {st.change_map():<8}  "
+              f"{st.last.hex(' '):<23}  {describe_frame(cid, st.last, table)}",
+              file=sys.stderr)
+    unknown = sorted(c for c in stats if per_layer(c)[0] is None)
+    if unknown:
+        ids = ", ".join(f"0x{c:03X}" for c in unknown)
+        print(f"\nnon-PER ids (foreign protocol, e.g. a non-TQ BMS): {ids}", file=sys.stderr)
 
 
 def cmd_info(args, table):
@@ -838,6 +928,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stop after N ms (default: run until Ctrl-C)")
     sp.add_argument("--raw", action="store_true",
                     help="show raw frames only, skip PER decode")
+    sp.add_argument("--unknown-only", action="store_true",
+                    help="show only non-PER frames (ids 0x400-0x5FF) — e.g. a "
+                         "foreign BMS protocol the bike ignores")
+    sp.add_argument("--log", metavar="FILE",
+                    help="also append every frame as '<t> <id> <hex>' to FILE")
     sp.set_defaults(fn=cmd_monitor)
 
     sp = sub.add_parser("info", help="dump readable params for a node (or all known)")
