@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-robotell-cli — talk to a TQ HPR50 e-bike over CAN using a generic Robotell
-USB-CAN adapter (via python-can), mirroring the CAN features of the C# `can-cli`.
+tq-canbus-config-tool — talk to a TQ HPR50 e-bike over CAN using any python-can
+adapter (Robotell by default), mirroring the CAN features of the C# `can-cli`.
 
 It speaks the TQ "PER" protocol directly on the wire (standard 11-bit frames,
 500 kbit/s), so it does NOT need any TQ assemblies. It loads the same
@@ -13,7 +13,7 @@ read, write, raw-read, raw-write, live, reset.
 
 What it CANNOT do (TQ-dongle-only, intentionally omitted): power-on/wake,
 dongle ADC diagnostics (diag), DongleValue reads, bootloader start-app,
-and the web-service commands. See ROBOTELL_CLI.md for why.
+and the web-service commands. See CLAUDE.md for why.
 
 Requires:  pip install python-can pyserial
 """
@@ -489,7 +489,7 @@ def cmd_read(args, table):
         print(f"parameter not found: {args.param}", file=sys.stderr)
         return 2
     if p.type != "CanValue":
-        print(f"robotell-cli can only read CAN parameters, got {p.type} "
+        print(f"tq-canbus-config-tool can only read CAN parameters, got {p.type} "
               f"(DongleValue params need the TQ dongle)", file=sys.stderr)
         return 2
     node = p.node if p.node >= 0 else int(args.node or 1)
@@ -518,7 +518,7 @@ def cmd_write(args, table):
         print(f"parameter not found: {args.param}", file=sys.stderr)
         return 2
     if p.type != "CanValue":
-        print(f"robotell-cli can only write CAN parameters, got {p.type}", file=sys.stderr)
+        print(f"tq-canbus-config-tool can only write CAN parameters, got {p.type}", file=sys.stderr)
         return 2
     if not p.writable:
         print(f"parameter {p.name} is read-only", file=sys.stderr)
@@ -632,13 +632,13 @@ def cmd_reset(args, table):
 
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="robotell-cli",
+        prog="tq-canbus-config-tool",
         description="Talk to a TQ HPR50 e-bike over CAN via any python-can adapter "
                     "(Robotell by default).")
-    ap.add_argument("--interface", default=os.environ.get("ROBOTELL_INTERFACE", "robotell"),
+    ap.add_argument("--interface", default=os.environ.get("TQ_CANBUS_INTERFACE", "robotell"),
                     help="python-can interface: robotell (default), socketcan, slcan, "
-                         "pcan, kvaser, ixxat, vector, … (or $ROBOTELL_INTERFACE)")
-    ap.add_argument("--channel", default=os.environ.get("ROBOTELL_PORT", "COM4"),
+                         "pcan, kvaser, ixxat, vector, … (or $TQ_CANBUS_INTERFACE)")
+    ap.add_argument("--channel", default=os.environ.get("TQ_CANBUS_PORT", "COM4"),
                     help="adapter channel: serial port (COM4, /dev/ttyUSB0) for "
                          "serial dongles, or e.g. can0 / PCAN_USBBUS1 for others")
     ap.add_argument("--bitrate", type=int, default=CAN_BITRATE,

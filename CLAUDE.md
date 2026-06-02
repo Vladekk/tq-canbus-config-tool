@@ -1,4 +1,4 @@
-# robotell-cli — manual
+# tq-canbus-config-tool — manual
 
 A small Python tool that talks to a **TQ HPR50 e-bike** over CAN using a generic
 **Robotell USB‑CAN adapter** (via [`python-can`](https://python-can.readthedocs.io/en/stable/interfaces/robotell.html)).
@@ -37,12 +37,12 @@ for the HPR50 bus: **500 kbit/s, standard 11‑bit frames**.
 
 ```bash
 # find your adapter's serial port
-python robotell_cli.py list-ports
+python tq_canbus_config.py list-ports
 
-# point every command at it with --channel (or set ROBOTELL_PORT)
-python robotell_cli.py --channel COM4 scan
-python robotell_cli.py --channel COM4 read BATT_SOC
-python robotell_cli.py --channel COM4 write SB_OUT1 1
+# point every command at it with --channel (or set TQ_CANBUS_PORT)
+python tq_canbus_config.py --channel COM4 scan
+python tq_canbus_config.py --channel COM4 read BATT_SOC
+python tq_canbus_config.py --channel COM4 write SB_OUT1 1
 ```
 
 On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
@@ -54,8 +54,8 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 
 | Option | Default | Meaning |
 |---|---|---|
-| `--interface <name>` | `robotell` (or `$ROBOTELL_INTERFACE`) | python‑can backend: `robotell`, `socketcan`, `slcan`, `pcan`, `kvaser`, `ixxat`, `vector`, … |
-| `--channel <chan>` | `COM4` (or `$ROBOTELL_PORT`) | Adapter channel: serial port (`COM4`, `/dev/ttyUSB0`) for serial dongles, or e.g. `can0` / `PCAN_USBBUS1` for others |
+| `--interface <name>` | `robotell` (or `$TQ_CANBUS_INTERFACE`) | python‑can backend: `robotell`, `socketcan`, `slcan`, `pcan`, `kvaser`, `ixxat`, `vector`, … |
+| `--channel <chan>` | `COM4` (or `$TQ_CANBUS_PORT`) | Adapter channel: serial port (`COM4`, `/dev/ttyUSB0`) for serial dongles, or e.g. `can0` / `PCAN_USBBUS1` for others |
 | `--bitrate <n>` | `500000` | CAN bitrate; pass `0` to leave it to the interface (e.g. a pre‑configured socketcan link) |
 | `--bus-arg <K=V>` | — | Extra keyword passed straight to `can.Bus()`, repeatable — for backend‑specific knobs (e.g. `--bus-arg receive_own_messages=true`) |
 | `--tty-baud <n>` | `115200` | USB‑serial baud for serial dongles (`robotell`/`slcan`); not the CAN bitrate |
@@ -72,11 +72,11 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 > for other backends pass their own options via `--bus-arg`. Examples:
 > ```bash
 > # SocketCAN (Linux), interface already up at 500k via `ip link`
-> python robotell_cli.py --interface socketcan --channel can0 --bitrate 0 scan
+> python tq_canbus_config.py --interface socketcan --channel can0 --bitrate 0 scan
 > # PEAK PCAN-USB
-> python robotell_cli.py --interface pcan --channel PCAN_USBBUS1 read BATT_SOC
+> python tq_canbus_config.py --interface pcan --channel PCAN_USBBUS1 read BATT_SOC
 > # SLCAN (Lawicel/CANUSB)
-> python robotell_cli.py --interface slcan --channel /dev/ttyACM0 scan
+> python tq_canbus_config.py --interface slcan --channel /dev/ttyACM0 scan
 > ```
 
 ---
@@ -112,25 +112,25 @@ for the write acknowledgement) — handy when the bus is degraded.
 
 ```bash
 # Discover what's on the bus
-python robotell_cli.py --channel COM4 scan --wait 1500
+python tq_canbus_config.py --channel COM4 scan --wait 1500
 
 # Read battery state of charge (BMS, node 17)
-python robotell_cli.py --channel COM4 read BATT_SOC
+python tq_canbus_config.py --channel COM4 read BATT_SOC
 
 # Enable Smartbox aux output 1 (node 46) permanently  (1=ON, 0=OFF, 3=switchable)
-python robotell_cli.py --channel COM4 write SB_OUT1 1
+python tq_canbus_config.py --channel COM4 write SB_OUT1 1
 
 # Same write, addressed manually instead of by name
-python robotell_cli.py --channel COM4 raw-write 46 0x3024 1
+python tq_canbus_config.py --channel COM4 raw-write 46 0x3024 1
 
 # Read it back raw
-python robotell_cli.py --channel COM4 raw-read 46 0x3024
+python tq_canbus_config.py --channel COM4 raw-read 46 0x3024
 
 # Live‑watch a couple of values at 5 Hz
-python robotell_cli.py --channel COM4 live BATT_SOC MCB_RT_LOG_MILEAGE --rate 5
+python tq_canbus_config.py --channel COM4 live BATT_SOC MCB_RT_LOG_MILEAGE --rate 5
 
 # See the actual frames going out/in
-python robotell_cli.py --channel COM4 -v read BATT_SOC
+python tq_canbus_config.py --channel COM4 -v read BATT_SOC
 ```
 
 ---
@@ -277,7 +277,7 @@ and `MCB_USR_DM_1..5_MOTOR_TUNE` (`0x6011`–`0x6015`, read-only tune slots).
 | `SB_OUT3` | `0x3023` | R/W | 0–3 | Aux output 3 (same encoding) |
 | `SB_ESHIFT` | `0x3021` | R/W | 0/1 | Electronic shifting (E-Shift) enable |
 
-> Tip: `python robotell_cli.py list-params [filter]` prints the live table from
+> Tip: `python tq_canbus_config.py list-params [filter]` prints the live table from
 > `params.json`, and `param-info <name>` shows one param's full definition
 > (node, range, width, scale). Those are the source of truth if `params.json`
 > changes; this section is a curated, annotated subset.
