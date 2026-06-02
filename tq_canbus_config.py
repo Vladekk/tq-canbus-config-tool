@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 tq-canbus-config-tool — talk to a TQ HPR50 e-bike over CAN using any python-can
-adapter (Robotell by default), mirroring the CAN features of the C# `can-cli`.
+adapter (Robotell by default).
 
 It speaks the TQ "PER" protocol directly on the wire (standard 11-bit frames,
-500 kbit/s), so it does NOT need any TQ assemblies. It loads the same
-parameter table (`params.json`) that `can-cli` uses for name<->ID/node/range
-resolution and value scaling.
+500 kbit/s), so it does NOT need any TQ software stack. It loads a parameter
+table (`params.json`) for name<->ID/node/range resolution and value scaling.
 
-What it can do (same as can-cli):  scan, info, list-params, param-info,
+What it can do:  scan, info, list-params, param-info,
 read, write, raw-read, raw-write, live, reset.
 
 What it CANNOT do (TQ-dongle-only, intentionally omitted): power-on/wake,
@@ -185,7 +184,7 @@ class ParamTable:
 
 def default_params_path() -> str:
     here = os.path.dirname(os.path.abspath(__file__))
-    return os.path.normpath(os.path.join(here, "..", "BikeParameters", "params.json"))
+    return os.path.normpath(os.path.join(here, "params.json"))
 
 
 # --------------------------------------------------------------------------

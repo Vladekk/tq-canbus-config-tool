@@ -2,12 +2,11 @@
 
 A small Python tool that talks to a **TQ HPR50 e-bike** over CAN using a generic
 **Robotell USB‑CAN adapter** (via [`python-can`](https://python-can.readthedocs.io/en/stable/interfaces/robotell.html)).
-It mirrors the CAN features of the C# `can-cli` in this repo, but speaks the TQ
-**PER protocol directly on the wire** — so it needs **no TQ assemblies and no TQ
-dongle**.
+It speaks the TQ **PER protocol directly on the wire** — so it needs **no TQ
+software stack and no TQ dongle**.
 
-It reads from / writes to the same nodes and parameters `can-cli` does, by
-loading the same `BikeParameters/params.json` for name ↔ ID / node / range /
+It reads from / writes to the bike's CAN nodes and parameters by loading
+`params.json` (in this repo, next to the script) for name ↔ ID / node / range /
 scaling resolution.
 
 > See [`CAN.md`](CAN.md) for the full PER‑protocol description these frames are built from.
@@ -62,7 +61,7 @@ On Linux: `--channel /dev/ttyUSB0`. You can also embed the serial baud:
 | `--rtscts` | off | Enable serial hardware flow control (serial dongles) |
 | `--node <id>` | — | Default node id for params that have no fixed node |
 | `--timeout <ms>` | `2000` | Per‑transaction wait for an ACK |
-| `--params <path>` | `../BikeParameters/params.json` | Parameter table to load |
+| `--params <path>` | `params.json` (next to the script) | Parameter table to load |
 | `--identity <who>` | `tool` | Announce as `tool` (node 61) or `dongle` (node 60); see §6 |
 | `--no-announce` | off | Skip the connect‑time SLAVECHANGED/NODEINFO announce (pure passive listen) |
 | `-v, --verbose` | off | Print the bus open kwargs + every TX/RX CAN frame to stderr |
@@ -158,10 +157,11 @@ sends `0x773  24 30 01 00 00 00`, expects `0x2AE  01 24 30` (status `01` =
 
 ---
 
-## 7. Limitations vs. `can-cli`
+## 7. Limitations (what it intentionally can't do)
 
-These `can-cli` features are **TQ‑dongle‑specific and intentionally not in this
-tool** — a Robotell is a plain CAN transceiver and cannot do them:
+These features need the TQ dongle's own hardware/firmware and are
+**intentionally not in this tool** — a Robotell is a plain CAN transceiver and
+cannot do them:
 
 | Missing feature | Why |
 |---|---|
@@ -169,7 +169,7 @@ tool** — a Robotell is a plain CAN transceiver and cannot do them:
 | `diag` + DongleValue reads | `RT_ADC_VOLTAGE_12V/48V/CAN_HIGH/CAN_LOW`, etc. are the TQ dongle’s onboard ADC sensors, reported over its USB protocol — not CAN. No equivalent on a Robotell. |
 | `start-app` / bootloader flows | Rely on TQ’s bootloader transaction layer. |
 | `web-status` / `web-client-info` | TQ cloud web services — unrelated to CAN; out of scope for this CAN tool. |
-| Rich `info` (firmware/bootloader versions, serials) | `can-cli` gets these via TQ’s `TargetLib` enumeration. Here `info` instead dumps the readable parameters of a node. |
+| Rich `info` (firmware/bootloader versions, serials) | The TQ tooling gets these via TQ’s `TargetLib` enumeration. Here `info` instead dumps the readable parameters of a node. |
 
 **Shared bus realities (same for any adapter):**
 - The bus must **ACK** your frames. A lone adapter on a silent/half‑broken bus

@@ -1,0 +1,1458 @@
+[
+  {
+    "Name": "RT_ADC_VOLTAGE_12V",
+    "ID": 12800,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 10000,
+      "Max": 15000
+    }
+  },
+  {
+    "Name": "RT_ADC_VOLTAGE_48V",
+    "ID": 12801,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 60000
+    }
+  },
+  {
+    "Name": "RT_ADC_VOLTAGE_BAT_KEY",
+    "ID": 12802,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 15000
+    }
+  },
+  {
+    "Name": "RT_ADC_VOLTAGE_BAT_WAKEUP",
+    "ID": 12803,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 2000,
+      "Max": 15000
+    }
+  },
+  {
+    "Name": "RT_ADC_VOLTAGE_CAN_HIGH",
+    "ID": 12804,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 15000
+    }
+  },
+  {
+    "Name": "RT_ADC_VOLTAGE_CAN_LOW",
+    "ID": 12805,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 15000
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_CAN_HIGH_PU_3V3_1K",
+    "ID": 13824,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_CAN_HIGH_PU_3V3_4K7",
+    "ID": 13825,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_CAN_LOW_PD_GND_100",
+    "ID": 13826,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_CAN_LOW_PD_GND_33",
+    "ID": 13827,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_BAT_KEY_PU_3V3_4K7",
+    "ID": 13828,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_FET_ENABLE_BAT_WAKEUP_PD_GND_680",
+    "ID": 13829,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_CAN_STATUS",
+    "ID": 14337,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 3
+    }
+  },
+  {
+    "Name": "RT_CAN_BAUDRATE",
+    "ID": 14338,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1000000
+    }
+  },
+  {
+    "Name": "RT_CAN_ENABLE",
+    "ID": 14339,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "RT_CAN_RX_ERC",
+    "ID": 14368,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1500
+    }
+  },
+  {
+    "Name": "RT_CAN_TX_ERC",
+    "ID": 14369,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1500
+    }
+  },
+  {
+    "Name": "SE_RESET",
+    "ID": 4112,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "SE_SW_MAJOR_VERSION",
+    "ID": 12033,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "SE_SW_MINOR_VERSION",
+    "ID": 12034,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "SE_SW_SUBVERSION",
+    "ID": 12035,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "SE_ACTIVATE_BL",
+    "ID": 1,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Write",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "SE_START_APP",
+    "ID": 2,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Write",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "SE_BUFFER_STARTADD",
+    "ID": 19,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": -1
+    }
+  },
+  {
+    "Name": "SE_BUFFER_FLUSH",
+    "ID": 20,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Write",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "SE_BUFFER_VAR_FLASH",
+    "ID": 32,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Write"
+  },
+  {
+    "Name": "SE_CRC_BL",
+    "ID": 49,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite"
+  },
+  {
+    "Name": "SE_CRC_APP",
+    "ID": 50,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "ReadWrite"
+  },
+  {
+    "Name": "SE_ERASEALL",
+    "ID": 64,
+    "Type": "DongleValue",
+    "CanTargetNodeId": -1,
+    "Access": "Write"
+  },
+  {
+    "Name": "MCB_RT_LOG_OPERATING_TIME",
+    "ID": 7168,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "sec",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_MILEAGE",
+    "ID": 7169,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "km",
+    "UnitScalingFactor": "0.001",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_ACTIVATIONS",
+    "ID": 7170,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_WHEELSPEED_MAX",
+    "ID": 7171,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "km/h",
+    "UnitScalingFactor": "1",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_PEDALSPEED_MAX",
+    "ID": 7172,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "rpm",
+    "UnitScalingFactor": "1",
+    "ValidRange": {
+      "Min": -200,
+      "Max": 200
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_PEDALSPEED_MEAN",
+    "ID": 7173,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "rpm",
+    "UnitScalingFactor": "1",
+    "ValidRange": {
+      "Min": -200,
+      "Max": 200
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_MOTORROTATIONS",
+    "ID": 7178,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitScalingFactor": "1"
+  },
+  {
+    "Name": "MCB_RT_LOG_HUMAN_PWR_MEAN",
+    "ID": 7179,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "Watt",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_BAT_ENERGY_KM",
+    "ID": 7180,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "Wh/km",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_CPU_MIN",
+    "ID": 7184,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_CPU_MAX",
+    "ID": 7185,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_PCB_MIN",
+    "ID": 7186,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_PCB_MAX",
+    "ID": 7187,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_FET_MIN",
+    "ID": 7188,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_FET_MAX",
+    "ID": 7189,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_MOT_MIN",
+    "ID": 7190,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_RT_LOG_TEMP_MOT_MAX",
+    "ID": 7191,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "UnitString": "�C",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -100,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "MCB_USR_DM_1_MOTOR_TUNE",
+    "ID": 24593,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_USR_DM_2_MOTOR_TUNE",
+    "ID": 24594,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_USR_DM_3_MOTOR_TUNE",
+    "ID": 24595,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_USR_DM_4_MOTOR_TUNE",
+    "ID": 24596,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_USR_DM_5_MOTOR_TUNE",
+    "ID": 24597,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_TIRE_CIRC",
+    "ID": 9729,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 1800,
+      "Max": 2500
+    }
+  },
+  {
+    "Name": "MCB_TIRE_CIRC_ALT",
+    "ID": 9738,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 1800,
+      "Max": 2500
+    }
+  },
+  {
+    "Name": "MCB_TIRE_CIRC_SEL",
+    "ID": 9739,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 1800,
+      "Max": 2500
+    }
+  },
+  {
+    "Name": "MCB_RT_PEDALDISTANCE",
+    "ID": 5638,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_RT_PEDALDISTANCE_INDEX",
+    "ID": 5642,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_RT_WHEELSPEED",
+    "ID": 5634,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "MCB_RT_ENC_HALL_DEVIATION",
+    "ID": 5808,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValueWidth": "SixteenBix",
+    "IsSigned": true,
+    "ValidRange": {
+      "Min": -32768,
+      "Max": 32767
+    }
+  },
+  {
+    "Name": "RT_ENC_NORM_A_DUTY",
+    "ID": 5809,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "RT_ENC_NORM_B_DUTY",
+    "ID": 5810,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "RT_ENC_IND_A_DUTY",
+    "ID": 5811,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "RT_ENC_IND_B_DUTY",
+    "ID": 5812,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "RT_ENC_IND_A_MAR_UM",
+    "ID": 5817,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "RT_ENC_IND_B_MAR_UM",
+    "ID": 5818,
+    "Type": "CanValue",
+    "CanTargetNodeId": 1,
+    "HardwareTypeList": [ 1, 2, 3, 4, 5, 6 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "DISP_WALK_ASSIST",
+    "ID": 24578,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "DISP_UNITS",
+    "ID": 24579,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    },
+    "ValueStringIDs": {
+      "0": "UNITS_METRIC",
+      "1": "UNITS_IMPERIAL"
+    }
+  },
+  {
+    "Name": "DISP_BUTTON_CONFIG",
+    "ID": 13312,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 7
+    }
+  },
+  {
+    "Name": "DISP_BUTTON_STATUS",
+    "ID": 13313,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 7
+    }
+  },
+  {
+    "Name": "DISP_CENTERBUTTON_MODE",
+    "ID": 24592,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "DISP_SOUNDS",
+    "ID": 24580,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_1",
+    "ID": 24608,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_2",
+    "ID": 24609,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_3",
+    "ID": 24610,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_4",
+    "ID": 24611,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_5",
+    "ID": 24612,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_6",
+    "ID": 24613,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_7",
+    "ID": 24614,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_8",
+    "ID": 24615,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_9",
+    "ID": 24616,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_ALTINFO_10",
+    "ID": 24617,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "0": "DISP_VIEW_DISABLED",
+      "1": "DISP_VIEW_BLANK",
+      "2": "DISP_VIEW_SOC",
+      "3": "DISP_VIEW_RANGE",
+      "4": "DISP_VIEW_POWER",
+      "5": "DISP_VIEW_SPEED",
+      "8": "DISP_VIEW_CADENCE"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_1_P",
+    "ID": 24608,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_1_S",
+    "ID": 24609,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_2_P",
+    "ID": 24610,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_2_S",
+    "ID": 24611,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_3_P",
+    "ID": 24612,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_3_S",
+    "ID": 24613,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_4_P",
+    "ID": 24614,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_4_S",
+    "ID": 24615,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_5_P",
+    "ID": 24616,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_FC_ALTINFO_5_S",
+    "ID": 24617,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 38 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 8
+    },
+    "ValueStringIDs": {
+      "1": "DISP_VIEW_FC_BLANK",
+      "2": "DISP_VIEW_FC_SPEED",
+      "3": "DISP_VIEW_FC_CADENCE",
+      "4": "DISP_VIEW_FC_MOTOR_POWER",
+      "5": "DISP_VIEW_FC_HUMAN_POWER",
+      "7": "DISP_VIEW_FC_RANGE_EST",
+      "9": "DISP_VIEW_FC_CLOCK"
+    }
+  },
+  {
+    "Name": "DISP_ANT_ID",
+    "ID": 24659,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "DISP_BE_OUT1",
+    "ID": 24656,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 37 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 5
+    }
+  },
+  {
+    "Name": "DISP_BE_STEALTH",
+    "ID": 24658,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 37 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "DISP_ANT_ID",
+    "ID": 24659,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "DISP_ANT_ID_AVAIL",
+    "ID": 24660,
+    "Type": "CanValue",
+    "CanTargetNodeId": 21,
+    "HardwareTypeList": [ 35, 36, 37, 38, 39 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "BATT_SOH",
+    "ID": 12611,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "UnitString": "%",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 100
+    }
+  },
+  {
+    "Name": "BATT_SOHREADY",
+    "ID": 12808,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "BATT_DESIGN_CAP",
+    "ID": 14714,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "BATT_FULL_CAP",
+    "ID": 12596,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 10000
+    }
+  },
+  {
+    "Name": "BATT_LIGHT_BACKUP",
+    "ID": 12832,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "BATT_KEEP_ALIVE",
+    "ID": 16655,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "BATT_CHARGE_CYC",
+    "ID": 12799,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80, 96 ],
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 65535
+    }
+  },
+  {
+    "Name": "BATT_SOC",
+    "ID": 12563,
+    "Type": "CanValue",
+    "CanTargetNodeId": 17,
+    "HardwareTypeList": [ 80 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "RAEXT_SOC",
+    "ID": 12563,
+    "Type": "CanValue",
+    "CanTargetNodeId": 20,
+    "HardwareTypeList": [ 96 ],
+    "Access": "Read"
+  },
+  {
+    "Name": "SB_ESHIFT",
+    "ID": 12321,
+    "Type": "CanValue",
+    "CanTargetNodeId": 46,
+    "HardwareTypeList": [ 72 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1
+    }
+  },
+  {
+    "Name": "SB_OUT2",
+    "ID": 12322,
+    "Type": "CanValue",
+    "CanTargetNodeId": 46,
+    "HardwareTypeList": [ 72 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 3
+    },
+    "ValueStringIDs": {
+      "0": "SB_OFF",
+      "1": "SB_ON",
+      "3": "SB_SWITCHABLE"
+    }
+  },
+  {
+    "Name": "SB_OUT3",
+    "ID": 12323,
+    "Type": "CanValue",
+    "CanTargetNodeId": 46,
+    "HardwareTypeList": [ 72 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 3
+    },
+    "ValueStringIDs": {
+      "0": "SB_OFF",
+      "1": "SB_ON",
+      "3": "SB_SWITCHABLE"
+    }
+  },
+  {
+    "Name": "SB_OUT1",
+    "ID": 12324,
+    "Type": "CanValue",
+    "CanTargetNodeId": 46,
+    "HardwareTypeList": [ 72 ],
+    "Access": "ReadWrite",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 3
+    },
+    "ValueStringIDs": {
+      "0": "SB_OFF",
+      "1": "SB_ON",
+      "3": "SB_SWITCHABLE"
+    }
+  },
+  {
+    "Name": "Can Impedance",
+    "ID": 1,
+    "Type": "CalculatedValue",
+    "CanTargetNodeId": -1,
+    "Access": "Read",
+    "ValidRange": {
+      "Min": 0,
+      "Max": 1000
+    }
+  }
+]

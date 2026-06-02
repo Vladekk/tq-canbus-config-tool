@@ -235,14 +235,14 @@ for pid in (0x3024, 0x3022, 0x3023):   # SB_OUT1..3
 
 ## 9. Mapping to the CLI
 
-The `can-cli` tool (this repo, `CanCli/`) builds exactly these frames:
+The `tq_canbus_config.py` tool builds exactly these frames:
 
-| CLI command                              | Frame produced                         |
-|------------------------------------------|----------------------------------------|
-| `can-cli write SB_OUT1 1`                | SDW 0x773 `24 30 01 00 00 00` (gated)   |
-| `can-cli write SB_OUT1 1 --force`        | same frame via `IPERBus.Send`, bypassing the HEAVY/OFF gate (fire-and-forget) |
-| `can-cli raw-write 46 0x3024 1 --force`  | identical bytes, addressed manually     |
-| `can-cli read SB_OUT1`                   | SDR 0x772 `24 30`, parses ACK_SDR reply |
+| CLI command                                    | Frame produced                         |
+|------------------------------------------------|----------------------------------------|
+| `tq_canbus_config.py write SB_OUT1 1`          | SDW 0x773 `24 30 01 00 00 00`, waits for ACK_SDW |
+| `tq_canbus_config.py write SB_OUT1 1 --no-ack` | same frame, fire-and-forget (no ACK wait) |
+| `tq_canbus_config.py raw-write 46 0x3024 1`    | identical bytes, addressed manually     |
+| `tq_canbus_config.py read SB_OUT1`             | SDR 0x772 `24 30`, parses ACK_SDR reply |
 
-Use `--force` only when you understand the bus may not ACK (no confirmation that the
-write landed). See README/`--help` for details.
+Use `--no-ack` only when you understand the bus may not ACK (no confirmation that the
+write landed). See `--help` for details.
