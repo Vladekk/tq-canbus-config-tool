@@ -281,3 +281,9 @@ and `MCB_USR_DM_1..5_MOTOR_TUNE` (`0x6011`–`0x6015`, read-only tune slots).
 > `params.json`, and `param-info <name>` shows one param's full definition
 > (node, range, width, scale). Those are the source of truth if `params.json`
 > changes; this section is a curated, annotated subset.
+
+---
+
+## 10. License
+
+MIT — see [`LICENSE`](LICENSE). © 2026 Vladislavs Kugelevics.
