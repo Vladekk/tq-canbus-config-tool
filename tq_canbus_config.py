@@ -558,6 +558,72 @@ def cmd_scan(args, table):
     return 0
 
 
+def cmd_selftest(args, table):
+    """Is the adapter working? Probe the adapter's own MCU over USB (independent
+    of the CAN bus), then passively listen, so 'adapter dead' and 'bus silent'
+    can be told apart."""
+    args.no_announce = True                # passive: don't TX into a silent bus
+    with _open(args) as bus:
+        print(f"interface={args.interface}  channel={args.channel}  "
+              f"tty-baud={args.tty_baud}")
+
+        # 1) Adapter MCU/USB probe. get_serial_number() round-trips to the stick's
+        #    STM32 over the serial config channel — no CAN traffic needed.
+        sn = None
+        getsn = getattr(bus.bus, "get_serial_number", None)
+        if callable(getsn):
+            try:
+                sn = getsn(2)
+            except Exception as e:
+                print(f"  adapter MCU: probe errored: {e}", file=sys.stderr)
+        if sn:
+            print(f"  adapter MCU : OK — responds on USB/serial (s/n {sn})")
+        elif getsn:
+            print("  adapter MCU : NO RESPONSE to config read — USB/serial/driver problem")
+        else:
+            print("  adapter MCU : (no serial-number probe for this interface; skipped)")
+        state = getattr(bus.bus, "state", None)
+        if state is not None:
+            print(f"  bus state   : {state}")
+
+        # 2) Passive listen for any traffic at all.
+        secs = (args.wait / 1000.0) if args.wait else 3.0
+        print(f"  listening {secs:.1f}s for any CAN frame …")
+        ids = set()
+        frames = 0
+        deadline = time.monotonic() + secs
+        while time.monotonic() < deadline:
+            m = bus.bus.recv(timeout=max(0.0, deadline - time.monotonic()))
+            if m is None:
+                continue
+            ids.add(m.arbitration_id)
+            frames += 1
+        print(f"  bus traffic : {frames} frame(s), {len(ids)} distinct id(s)")
+
+        # 3) Verdict.
+        print()
+        if sn and frames:
+            print("VERDICT: adapter OK and the CAN bus is alive.")
+        elif sn and not frames:
+            print("VERDICT: adapter is HEALTHY (its MCU answers over USB), but the CAN bus "
+                  "is SILENT.")
+            print("  Nothing is transmitting. A lone adapter on a silent bus correctly sees")
+            print("  nothing — this is not an adapter fault. Likely: no powered/awake node")
+            print("  (whole bus is battery-powered and asleep/off), or a CAN_H/CAN_L wiring")
+            print("  or 120Ω termination problem. Note: this passive test can't by itself")
+            print("  prove the adapter's CAN transceiver TX works — that needs a second node")
+            print("  or a loopback rig.")
+        elif getsn and not sn:
+            print("VERDICT: adapter is NOT responding on USB/serial.")
+            print("  Check the USB cable/port, that no other program holds the port, and the")
+            print("  serial baud (--tty-baud 115200). Unplug/replug the stick to clear the")
+            print("  CH340 buffer, then retry.")
+        else:
+            print(f"VERDICT: received {frames} frame(s); MCU probe unavailable on this "
+                  "interface, so adapter health is inconclusive.")
+    return 0
+
+
 def lookup_param(table, addr: int, node: int):
     """Find the CanValue param matching both address and node (ids collide
     across nodes, e.g. 0x3113 is BATT_SOC on 17 and RAEXT_SOC on 20)."""
@@ -922,6 +988,12 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("scan", help="discover nodes on the bus")
     sp.add_argument("--wait", type=int, default=0, help="passive listen window in ms")
     sp.set_defaults(fn=cmd_scan)
+
+    sp = sub.add_parser("selftest",
+                        help="check the adapter itself (USB/MCU) vs. a silent bus")
+    sp.add_argument("--wait", type=int, default=0,
+                    help="passive listen window in ms (default 3000)")
+    sp.set_defaults(fn=cmd_selftest)
 
     sp = sub.add_parser("monitor", help="passively dump & decode all CAN bus traffic")
     sp.add_argument("--duration", type=int, default=0,
