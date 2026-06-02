@@ -387,12 +387,18 @@ def scaled_str(value: int, p: Param) -> str:
 # --------------------------------------------------------------------------
 
 def enumerate_ports():
-    """Return [(device, description, hwid, is_robotell)] for every serial port."""
+    """Return [(device, description, hwid, is_robotell)] for every serial port.
+
+    Skips ports with no real identity (pyserial reports "n/a" for description
+    and hwid) — these are typically dummy/virtual ports, never a USB adapter.
+    """
     from serial.tools import list_ports
     out = []
     for pinfo in list_ports.comports():
         desc = pinfo.description or ""
         hwid = pinfo.hwid or ""
+        if desc.strip().lower() in ("", "n/a") and hwid.strip().lower() in ("", "n/a"):
+            continue
         is_robo = "CH340" in (desc + hwid).upper()
         out.append((pinfo.device, desc, hwid, is_robo))
     return out
